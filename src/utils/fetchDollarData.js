@@ -1,11 +1,9 @@
 import axios from "axios";
-import { DollarData } from "@interfaces";
-import { DollarType } from "../models/enums";
 
 const API_URL = "https://www.dolarsi.com/api/api.php?type=valoresprincipales";
 
-const fetchDollarData = async (): Promise<DollarData> => {
-  let dollarData: DollarData = {
+const fetchDollarData = async () => {
+  let dollarData = {
     dolarOficial: {
       compra: "-1",
       venta: "-1",
@@ -69,7 +67,6 @@ const fetchDollarData = async (): Promise<DollarData> => {
         break;
     }
   }
-  console.log(dollarData);
   return dollarData;
 };
 
