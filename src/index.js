@@ -3,6 +3,9 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const commands = require("./utils/commands");
 const cron = require("cron");
 const fetchDollarData = require("./utils/fetchDollarData");
+const buildDollarMessage = require("./utils/buildDollarMessage");
+const { config } = require("dotenv");
+config();
 
 const job = new cron.CronJob(
   "0 16 * * 1-5",
@@ -11,16 +14,7 @@ const job = new cron.CronJob(
       guild.channels.cache.forEach((channel) => {
         if (channel.type === 0) {
           channel
-            .send(
-              `
-**Dólar Oficial** => $${dollarData.dolarOficial.venta} para la venta y ${dollarData.dolarOficial.compra} para la compra.\n
-**Dólar Blue** => $${dollarData.dolarBlue.venta} para la venta y ${dollarData.dolarBlue.compra} para la compra.\n
-**Dólar Bolsa** => $${dollarData.dolarBolsa.venta} para la venta y ${dollarData.dolarBolsa.compra} para la compra.\n
-**Dólar Contado con Liqui** => $${dollarData.dolarLiqui.venta} para la venta y ${dollarData.dolarLiqui.compra} para la compra.\n
-**Dólar Soja** => $${dollarData.dolarSoja.venta} para la venta y ${dollarData.dolarSoja.compra} para la compra.\n
-**Dólar Turista** => $${dollarData.dolarTurista.venta} para la venta y ${dollarData.dolarTurista.compra} para la compra.\n
-              `
-            )
+            .send(buildDollarMessage(dollarData))
             .catch((error) => console.log(error));
         }
       });
@@ -31,15 +25,13 @@ const job = new cron.CronJob(
   "America/Argentina/Buenos_Aires"
 );
 
-const rest = new REST({ version: "10" }).setToken(
-  "MTA4NzgzMjc0NTQxOTQ4MTE2OA.GaG5fX.B3g3FtPhtU5jptPWXR3lEERj7FvKo2-ZyxwtP8"
-);
+const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
   try {
     console.log("Started refreshing application (/) commands.");
 
-    await rest.put(Routes.applicationCommands("1087832745419481168"), {
+    await rest.put(Routes.applicationCommands(process.env.DISCORD_CLIENT_ID), {
       body: commands,
     });
 
@@ -104,18 +96,9 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   if (interaction.commandName === "dolar") {
-    const dollarData = await fetchDollarData();
-    await interaction.reply(`
-**Dólar Oficial** => $${dollarData.dolarOficial.venta} para la venta y ${dollarData.dolarOficial.compra} para la compra.\n
-**Dólar Blue** => $${dollarData.dolarBlue.venta} para la venta y ${dollarData.dolarBlue.compra} para la compra.\n
-**Dólar Bolsa** => $${dollarData.dolarBolsa.venta} para la venta y ${dollarData.dolarBolsa.compra} para la compra.\n
-**Dólar Contado con Liqui** => $${dollarData.dolarLiqui.venta} para la venta y ${dollarData.dolarLiqui.compra} para la compra.\n
-**Dólar Soja** => $${dollarData.dolarSoja.venta} para la venta y ${dollarData.dolarSoja.compra} para la compra.\n
-**Dólar Turista** => $${dollarData.dolarTurista.venta} para la venta y ${dollarData.dolarTurista.compra} para la compra.\n
-    `);
+    const dollarMessage = await buildDollarMessage();
+    await interaction.reply(dollarMessage);
   }
 });
 
-client.login(
-  "MTA4NzgzMjc0NTQxOTQ4MTE2OA.GaG5fX.B3g3FtPhtU5jptPWXR3lEERj7FvKo2-ZyxwtP8"
-);
+client.login(process.env.DISCORD_TOKEN);
