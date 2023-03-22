@@ -1,10 +1,38 @@
 const { Client, GatewayIntentBits, REST, Routes } = require("discord.js");
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const commands = require("./utils/commands");
+const cron = require("cron");
 const fetchDollarData = require("./utils/fetchDollarData");
 
+const job = new cron.CronJob(
+  "0 16 * * 1-5",
+  function () {
+    client.guilds.cache.forEach((guild) => {
+      guild.channels.cache.forEach((channel) => {
+        if (channel.type === 0) {
+          channel
+            .send(
+              `
+**Dólar Oficial** => $${dollarData.dolarOficial.venta} para la venta y ${dollarData.dolarOficial.compra} para la compra.\n
+**Dólar Blue** => $${dollarData.dolarBlue.venta} para la venta y ${dollarData.dolarBlue.compra} para la compra.\n
+**Dólar Bolsa** => $${dollarData.dolarBolsa.venta} para la venta y ${dollarData.dolarBolsa.compra} para la compra.\n
+**Dólar Contado con Liqui** => $${dollarData.dolarLiqui.venta} para la venta y ${dollarData.dolarLiqui.compra} para la compra.\n
+**Dólar Soja** => $${dollarData.dolarSoja.venta} para la venta y ${dollarData.dolarSoja.compra} para la compra.\n
+**Dólar Turista** => $${dollarData.dolarTurista.venta} para la venta y ${dollarData.dolarTurista.compra} para la compra.\n
+              `
+            )
+            .catch((error) => console.log(error));
+        }
+      });
+    });
+  },
+  null,
+  true,
+  "America/Argentina/Buenos_Aires"
+);
+
 const rest = new REST({ version: "10" }).setToken(
-  "MTA4NzgzMjc0NTQxOTQ4MTE2OA.Go9pUU.bk1sCRS56l2dLPjeGG_wThY4BCTa8UKrO5oIwM"
+  "MTA4NzgzMjc0NTQxOTQ4MTE2OA.GaG5fX.B3g3FtPhtU5jptPWXR3lEERj7FvKo2-ZyxwtP8"
 );
 
 (async () => {
@@ -16,6 +44,7 @@ const rest = new REST({ version: "10" }).setToken(
     });
 
     console.log("Successfully reloaded application (/) commands.");
+    job.start();
   } catch (error) {
     console.error(error);
   }
@@ -88,5 +117,5 @@ client.on("interactionCreate", async (interaction) => {
 });
 
 client.login(
-  "MTA4NzgzMjc0NTQxOTQ4MTE2OA.Go9pUU.bk1sCRS56l2dLPjeGG_wThY4BCTa8UKrO5oIwM"
+  "MTA4NzgzMjc0NTQxOTQ4MTE2OA.GaG5fX.B3g3FtPhtU5jptPWXR3lEERj7FvKo2-ZyxwtP8"
 );
