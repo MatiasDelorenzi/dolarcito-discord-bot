@@ -1,4 +1,4 @@
-import axios from "axios";
+const axios = require("axios");
 
 const API_URL = "https://www.dolarsi.com/api/api.php?type=valoresprincipales";
 
@@ -7,59 +7,61 @@ const fetchDollarData = async () => {
     dolarOficial: {
       compra: "-1",
       venta: "-1",
-      nombre: DollarType.OFICIAL,
+      nombre: "Dolar Oficial",
     },
     dolarBlue: {
       compra: "-1",
       venta: "-1",
-      nombre: DollarType.BLUE,
+      nombre: "Dolar Blue",
     },
     dolarBolsa: {
       compra: "-1",
       venta: "-1",
-      nombre: DollarType.BOLSA,
+      nombre: "Dolar Bolsa",
     },
     dolarLiqui: {
       compra: "-1",
       venta: "-1",
-      nombre: DollarType.LIQUI,
+      nombre: "Dolar Contado con Liqui",
     },
     dolarSoja: {
       compra: "-1",
       venta: "-1",
-      nombre: DollarType.SOJA,
+      nombre: "Dolar Soja",
     },
     dolarTurista: {
       compra: "-1",
       venta: "-1",
-      nombre: DollarType.TURISTA,
+      nombre: "Dolar turista",
     },
   };
+
   const { data } = await axios.get(API_URL);
+
   for (let i = 0; i < data.length; i++) {
     const dollar = data[i].casa;
     switch (dollar.nombre) {
-      case DollarType.OFICIAL:
+      case "Dolar Oficial":
         dollarData.dolarOficial.compra = dollar.compra;
         dollarData.dolarOficial.venta = dollar.venta;
         break;
-      case DollarType.BLUE:
+      case "Dolar Blue":
         dollarData.dolarBlue.compra = dollar.compra;
         dollarData.dolarBlue.venta = dollar.venta;
         break;
-      case DollarType.SOJA:
+      case "Dolar Soja":
         dollarData.dolarSoja.compra = dollar.compra;
         dollarData.dolarSoja.venta = dollar.venta;
         break;
-      case DollarType.LIQUI:
+      case "Dolar Contado con Liqui":
         dollarData.dolarLiqui.compra = dollar.compra;
         dollarData.dolarLiqui.venta = dollar.venta;
         break;
-      case DollarType.BOLSA:
+      case "Dolar Bolsa":
         dollarData.dolarBolsa.compra = dollar.compra;
         dollarData.dolarBolsa.venta = dollar.venta;
         break;
-      case DollarType.TURISTA:
+      case "Dolar turista":
         dollarData.dolarTurista.compra = dollar.compra;
         dollarData.dolarTurista.venta = dollar.venta;
         break;
@@ -70,4 +72,4 @@ const fetchDollarData = async () => {
   return dollarData;
 };
 
-fetchDollarData();
+module.exports = fetchDollarData;
