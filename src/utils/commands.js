@@ -28,7 +28,7 @@ const commands = [
     description: "Responde con el valor del Dólar Turista.",
   },
   {
-    name: "dolar",
+    name: "cotizaciones",
     description: "Responde con todas las cotizaciones del Dólar.",
   },
 ];
