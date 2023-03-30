@@ -3,8 +3,9 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const commands = require("./utils/commands");
 const cron = require("cron");
 const fetchDollarData = require("./utils/fetchDollarData");
-const buildDollarMessage = require("./utils/buildDollarMessage");
 const { config } = require("dotenv");
+const buildDollarTypeMessage = require("./utils/messages/buildDollarTypeMessage");
+const buildAllDollarMessage = require("./utils/messages/buildAllDollarMessage");
 config();
 
 const job = new cron.CronJob(
@@ -56,47 +57,71 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.commandName === "blue") {
     const { dolarBlue } = await fetchDollarData();
     await interaction.reply(
-      `El dólar blue está a $${dolarBlue.venta} para la venta y $${dolarBlue.compra} para la compra.`
+      buildDollarTypeMessage(
+        dolarBlue.nombre,
+        dolarBlue.compra,
+        dolarBlue.venta
+      )
     );
   }
 
   if (interaction.commandName === "oficial") {
     const { dolarOficial } = await fetchDollarData();
     await interaction.reply(
-      `El dólar oficial está a $${dolarOficial.venta} para la venta y $${dolarOficial.compra} para la compra.`
+      buildDollarTypeMessage(
+        dolarOficial.nombre,
+        dolarOficial.compra,
+        dolarOficial.venta
+      )
     );
   }
 
   if (interaction.commandName === "bolsa") {
     const { dolarBolsa } = await fetchDollarData();
     await interaction.reply(
-      `El dólar bolsa está a $${dolarBolsa.venta} para la venta y $${dolarBolsa.compra} para la compra.`
+      buildDollarTypeMessage(
+        dolarBolsa.nombre,
+        dolarBolsa.compra,
+        dolarBolsa.venta
+      )
     );
   }
 
   if (interaction.commandName === "liqui") {
     const { dolarLiqui } = await fetchDollarData();
     await interaction.reply(
-      `El dólar contado con liqui está a $${dolarLiqui.venta} para la venta y $${dolarLiqui.compra} para la compra.`
+      buildDollarTypeMessage(
+        dolarLiqui.nombre,
+        dolarLiqui.compra,
+        dolarLiqui.venta
+      )
     );
   }
 
   if (interaction.commandName === "soja") {
     const { dolarSoja } = await fetchDollarData();
     await interaction.reply(
-      `El dólar soja está a $${dolarSoja.venta} para la venta y $${dolarSoja.compra} para la compra.`
+      buildDollarTypeMessage(
+        dolarSoja.nombre,
+        dolarSoja.compra,
+        dolarSoja.venta
+      )
     );
   }
 
   if (interaction.commandName === "turista") {
     const { dolarTurista } = await fetchDollarData();
     await interaction.reply(
-      `El dólar turista está a $${dolarTurista.venta} para la venta y ${dolarTurista.compra} para la compra.`
+      buildDollarTypeMessage(
+        dolarTurista.nombre,
+        dolarTurista.compra,
+        dolarTurista.venta
+      )
     );
   }
 
-  if (interaction.commandName === "dolar") {
-    const dollarMessage = await buildDollarMessage();
+  if (interaction.commandName === "cotizaciones") {
+    const dollarMessage = await buildAllDollarMessage();
     await interaction.reply(dollarMessage);
   }
 });
